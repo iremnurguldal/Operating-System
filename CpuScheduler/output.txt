@@ -1,0 +1,43 @@
+Process P2 is queued to be assigned to CPU-1.
+Process P2 is assigned to CPU-1.
+Process P2 is completed and terminated.
+Process P4 is queued to be assigned to CPU-1.
+Process P4 is assigned to CPU-1.
+Process P4 is completed and terminated.
+Process P7 is queued to be assigned to CPU-1.
+Process P7 is assigned to CPU-1.
+Process P7 is completed and terminated.
+Process P8 is queued to be assigned to CPU-1.
+Process P8 is assigned to CPU-1.
+Process P8 is completed and terminated.
+Process P9 is queued to be assigned to CPU-1.
+Process P9 is assigned to CPU-1.
+Process P9 is completed and terminated.
+Process P11 is queued to be assigned to CPU-1.
+Process P11 is assigned to CPU-1.
+Process P11 is completed and terminated.
+Process P17 is queued to be assigned to CPU-1.
+Process P17 is assigned to CPU-1.
+Process P17 is completed and terminated.
+Process P18 is queued to be assigned to CPU-1.
+Process P18 is assigned to CPU-1.
+Process P18 is completed and terminated.
+Process P20 is queued to be assigned to CPU-1.
+Process P20 is assigned to CPU-1.
+Process P20 is completed and terminated.
+Process P1 is placed in the queue to be assigned to CPU-2.
+Process P1 is assigned to CPU-2.
+The operation of process P1 is completed and terminated.
+Process P15 is placed in the queue to be assigned to CPU-2.
+Process P15 is assigned to CPU-2.
+The operation of process P15 is completed and terminated.
+Process P25 is placed in the queue to be assigned to CPU-2.
+Process P25 is assigned to CPU-2.
+The operation of process P25 is completed and terminated.
+Process P23 is placed in the queue to be assigned to CPU-2.
+Process P23 is assigned to CPU-2.
+The operation of process P23 is completed and terminated.
+CPU-1 queue (priority-0) (FCFS)→ P1 P15 P25 
+CPU-2 queue (priority-1) (SJF)→ P23 
+CPU-2 queue (priority-2) (RR-q8)→ P23 
+CPU-2 queue (priority-3) (RR-q16)→ 

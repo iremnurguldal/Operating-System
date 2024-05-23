@@ -23,6 +23,7 @@ typedef struct {
 void sort_processes_by_priority(Process *processes, int num_processes);
 int are_resources_available(int RAM, int CPU_rate, int *cpu_ram, int *cpu_rate);
 void enqueue_process(ProcessQueue *queue, Process process);
+void print_queue_contents(ProcessQueue *queue, FILE *output_file);
 
 extern ProcessQueue high_priority_queue;
 extern ProcessQueue medium_priority_queue;

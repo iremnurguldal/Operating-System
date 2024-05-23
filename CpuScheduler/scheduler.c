@@ -1,5 +1,63 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include "scheduler.h"
+
+
+ProcessQueue high_priority_queue = { .front = 0, .rear = -1, .size = 0 };
+ProcessQueue medium_priority_queue = { .front = 0, .rear = -1, .size = 0 };
+ProcessQueue low_priority_queue = { .front = 0, .rear = -1, .size = 0 };
+
+// Öncelik sırasına göre işlemleri sırala
+void sort_processes_by_priority(Process *processes, int num_processes) {
+    for (int i = 0; i < num_processes - 1; i++) {
+        for (int j = 0; j < num_processes - i - 1; j++) {
+            if (processes[j].priority > processes[j + 1].priority) {
+                Process temp = processes[j];
+                processes[j] = processes[j + 1];
+                processes[j + 1] = temp;
+            }
+        }
+    }
+}
+
+// Kaynakların mevcut olup olmadığını kontrol et
+int are_resources_available(int RAM, int CPU_rate, int *cpu_ram, int *cpu_rate) {
+    if (cpu_ram && *cpu_ram < RAM) {
+        return 0;
+    }
+    if (cpu_rate && *cpu_rate < CPU_rate) {
+        return 0;
+    }
+    if (cpu_ram) {
+        *cpu_ram -= RAM;
+    }
+    if (cpu_rate) {
+        *cpu_rate -= CPU_rate;
+    }
+    return 1;
+}
+
+// İşlemi kuyruğa ekleme
+void enqueue_process(ProcessQueue *queue, Process process) {
+    if (queue->size == MAX_PROCESSES) {
+        printf("Kuyruk dolu, işlem eklenemiyor!\n");
+        return;
+    }
+    queue->rear = (queue->rear + 1) % MAX_PROCESSES;
+    queue->processes[queue->rear] = process;
+    queue->size++;
+}
+
+// Kuyruğun içeriğini dosyaya yazdırmak için fonksiyon tanımı
+void print_queue_contents(ProcessQueue *queue, FILE *output_file) {
+    // Kuyruğun içeriğini dolaşarak her bir elemanı dosyaya yazdırma
+    for (int i = 0; i < queue->size; i++) {
+        int index = (queue->front + i) % MAX_PROCESSES;
+        fprintf(output_file, "%s ", queue->processes[index].process_number);
+    }
+    fprintf(output_file, "\n"); // Kuyruğun sonuna yeni satır ekleme
+}
 
 void read_input(Process *processes, int *num_processes) {
     FILE *input_file;
@@ -22,15 +80,12 @@ void read_input(Process *processes, int *num_processes) {
     fclose(input_file);
 }
 
-
 void perform_scheduling(Process *processes, int num_processes) {
     FILE *output_file = fopen("output.txt", "w");
     if (output_file == NULL) {
         printf("Output dosyası oluşturulamadı!");
         return;
     }
-
-
 
     // Öncelik sırasına göre işlemleri sırala
     sort_processes_by_priority(processes, num_processes);
@@ -47,7 +102,6 @@ void perform_scheduling(Process *processes, int num_processes) {
                 fprintf(output_file, "Process %s is queued to be assigned to CPU-1.\n", processes[i].process_number);
                 fprintf(output_file, "Process %s is assigned to CPU-1.\n", processes[i].process_number);
                 // İşlemleri CPU-1'e atama işlemi
-                // Örneğin: assign_to_cpu1(&processes[i]);
                 fprintf(output_file, "Process %s is completed and terminated.\n", processes[i].process_number);
             }
         }
@@ -72,31 +126,22 @@ void perform_scheduling(Process *processes, int num_processes) {
                 }
                 fprintf(output_file, "Process %s is assigned to CPU-2.\n", processes[i].process_number);
                 // İşlemleri CPU-2'ye atama işlemi
-                // Örneğin: assign_to_cpu2(&processes[i]);
                 fprintf(output_file, "The operation of process %s is completed and terminated.\n", processes[i].process_number);
             }
         }
     }
-
-   
-    // Kuyrukların içeriğini yazdırmak için
-    fprintf(output_file, "CPU-1 que1(priority-0) (FCFS)→ ");
+   // Kuyrukların içeriğini yazdırmak için
+    fprintf(output_file, "CPU-1 queue (priority-0) (FCFS)→ ");
     print_queue_contents(&high_priority_queue, output_file);
 
-    fprintf(output_file, "CPU-2 que2(priority-1) (SJF)→ ");
+    fprintf(output_file, "CPU-2 queue (priority-1) (SJF)→ ");
     print_queue_contents(&medium_priority_queue, output_file);
 
-    fprintf(output_file, "CPU-2 que3(priority-2) (RR-q8)→ ");
+    fprintf(output_file, "CPU-2 queue (priority-2) (RR-q8)→ ");
+    print_queue_contents(&medium_priority_queue, output_file);
+
+    fprintf(output_file, "CPU-2 queue (priority-3) (RR-q16)→ ");
     print_queue_contents(&low_priority_queue, output_file);
 
-
     fclose(output_file);
-}
-// Kuyruğun içeriğini dosyaya yazdırmak için fonksiyon tanımı
-void print_queue_contents(ProcessQueue *queue, FILE *output_file) {
-    // Kuyruğun içeriğini dolaşarak her bir elemanı dosyaya yazdırma
-    for (int i = queue->front; i <= queue->rear; i++) {
-        fprintf(output_file, "%s ", queue->processes[i].process_number);
-    }
-    fprintf(output_file, "\n"); // Kuyruğun sonuna yeni satır ekleme
 }
